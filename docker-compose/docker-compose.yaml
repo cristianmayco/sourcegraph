@@ -45,13 +45,13 @@ services:
     restart: "on-failure"
     networks: 
       - sourcegraph
-    depends_on:
-      pgsql:
-        condition: service_healthy
-      codeinsights-db:
-        condition: service_healthy
-      codeintel-db:
-        condition: service_healthy
+    #depends_on:
+      #pgsql:
+     #   condition: service_healthy
+      #codeinsights-db:
+     #   condition: service_healthy
+      #codeintel-db:
+      #  condition: service_healthy
 
   # Description: Acts as a reverse proxy for all of the sourcegraph-frontend instances
   #
@@ -153,9 +153,9 @@ services:
     networks:
       - sourcegraph
     restart: always
-    depends_on:
-      sourcegraph-frontend-internal:
-        condition: service_healthy
+    #depends_on:
+      #sourcegraph-frontend-internal:
+        #condition: service_healthy
 
   # Description: Serves the internal Sourcegraph frontend API.
   #
@@ -195,13 +195,13 @@ services:
       timeout: 10s
       retries: 5
       start_period: 300s
-    depends_on:
-      pgsql:
-        condition: service_healthy
-      codeintel-db:
-        condition: service_healthy
-      migrator:
-        condition: service_completed_successfully
+   # depends_on:
+    #  pgsql:
+     #   condition: service_healthy
+     # codeintel-db:
+      #  condition: service_healthy
+      #migrator:
+       # condition: service_completed_successfully
 
   # Description: Stores clones of repositories to perform Git operations.
   #
@@ -235,8 +235,8 @@ services:
   zoekt-indexserver-0:
     container_name: zoekt-indexserver-0
     image: 'index.docker.io/sourcegraph/search-indexer:insiders@sha256:461625546e3636a1abd38b94b3accea6b8d1ae92924b738cc7b41f5e8f74bb45'
-    cpus: 8
-    mem_limit: '16g'
+    cpus: 4
+    mem_limit: '10g'
     environment:
       - 'HOSTNAME=zoekt-webserver-0:6070'
       - 'SRC_FRONTEND_INTERNAL=http://sourcegraph-frontend-internal:3090'
@@ -256,8 +256,8 @@ services:
   zoekt-webserver-0:
     container_name: zoekt-webserver-0
     image: 'index.docker.io/sourcegraph/indexed-searcher:insiders@sha256:9d7f9a49ba16dae3c2e0ae27972b02421d65c60682ea107633dac6ab286228fb'
-    cpus: 8
-    mem_limit: '50g'
+    cpus: 4
+    mem_limit: '12g'
     environment:
       - 'HOSTNAME=zoekt-webserver-0:6070'
     healthcheck:
